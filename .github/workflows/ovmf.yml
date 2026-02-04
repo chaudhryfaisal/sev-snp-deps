@@ -43,7 +43,7 @@ jobs:
 
           docker buildx build \
             -f docker/Dockerfile.ovmf \
-            -t ghcr.io/dfinity/ovmf-builder:${{ github.sha }} \
+            -t ghcr.io/${{ github.repository_owner }}/ovmf-builder:${{ github.sha }} \
             --platform linux/amd64 \
             --build-arg SOURCE_DATE_EPOCH=0 \
             --output type=docker,dest=archive.tar,rewrite-timestamp=true \
@@ -59,7 +59,7 @@ jobs:
 
       - name: Publish docker image
         run: |
-          docker push ghcr.io/dfinity/ovmf-builder:${{ github.sha }}
+          docker push ghcr.io/${{ github.repository_owner }}/ovmf-builder:${{ github.sha }}
 
   image-ref-changes:
     runs-on: ubuntu-latest
@@ -128,7 +128,7 @@ jobs:
             -v ${{ github.workspace }}/out:/out \
             -e SOURCE_DIR="/upstream" \
             -e OUT_DIR="/out" \
-            ghcr.io/dfinity/ovmf-builder:${{ env.BUILDER_REF }} \
+            ghcr.io/${{ github.repository_owner }}/ovmf-builder:${{ env.BUILDER_REF }} \
               bash /local/build/ovmf.sh
 
       - name: Set short sha
@@ -137,13 +137,12 @@ jobs:
       - name: Publish
         uses: softprops/action-gh-release@v1
         with:
-          token: ${{ secrets.RELEASE_ACCESS_TOKEN }}
           tag_name: ovmf-${{ env.SHORT_SHA }}
           files: |
             ${{ github.workspace }}/out/OVMF.fd
           body: |
             | Name | Value |
             | ------------- | ------------- |
-            | Builder | [ghcr.io/dfinity/ovmf-builder:${{ env.BUILDER_REF }}](https://github.com/${{ github.repository }}/pkgs/container/ovmf-builder) |
+            | Builder | [ghcr.io/${{ github.repository_owner }}/ovmf-builder:${{ env.BUILDER_REF }}](https://github.com/${{ github.repository }}/pkgs/container/ovmf-builder) |
             | Local | [${{ github.repository }}:${{ github.sha }}](https://github.com/${{ github.repository }}/tree/${{ github.sha }}) |
             | Upstream | [${{ matrix.upstream }}:${{ matrix.ref }}](https://github.com/${{ matrix.upstream }}/tree/${{ matrix.ref }}) |

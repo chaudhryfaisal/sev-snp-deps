@@ -43,7 +43,7 @@ jobs:
 
           docker buildx build \
             -f docker/Dockerfile.qemu \
-            -t ghcr.io/dfinity/qemu-builder:${{ github.sha }} \
+            -t ghcr.io/${{ github.repository_owner }}/qemu-builder:${{ github.sha }} \
             --platform linux/amd64 \
             --build-arg SOURCE_DATE_EPOCH=0 \
             --output type=docker,dest=archive.tar,rewrite-timestamp=true \
@@ -59,7 +59,7 @@ jobs:
 
       - name: Publish docker image
         run: |
-          docker push ghcr.io/dfinity/qemu-builder:${{ github.sha }}
+          docker push ghcr.io/${{ github.repository_owner }}/qemu-builder:${{ github.sha }}
 
   image-ref-changes:
     runs-on: ubuntu-latest
@@ -131,7 +131,7 @@ jobs:
             -v ${{ github.workspace }}/build:/build -w /build \
             -e SOURCE_DIR="/upstream" \
             -e SOURCE_DATE_EPOCH=0 \
-            ghcr.io/dfinity/qemu-builder:${{ env.BUILDER_REF }} \
+            ghcr.io/${{ github.repository_owner }}/qemu-builder:${{ env.BUILDER_REF }} \
               bash /local/build/qemu.sh
 
       - name: Set short sha
@@ -146,6 +146,6 @@ jobs:
           body: |
             | Name | Value |
             | ------------- | ------------- |
-            | Builder | [ghcr.io/dfinity/qemu-builder:${{ env.BUILDER_REF }}](https://github.com/${{ github.repository }}/pkgs/container/qemu-builder) |
+            | Builder | [ghcr.io/${{ github.repository_owner }}/qemu-builder:${{ env.BUILDER_REF }}](https://github.com/${{ github.repository }}/pkgs/container/qemu-builder) |
             | Local | [${{ github.repository }}:${{ github.sha }}](https://github.com/${{ github.repository }}/tree/${{ github.sha }}) |
             | Upstream | [${{ matrix.upstream }}:${{ matrix.ref }}](https://github.com/${{ matrix.upstream }}/tree/${{ matrix.ref }}) |
