@@ -15,7 +15,10 @@ ${SOURCE_DIR}/configure \
     --disable-gio \
     --disable-pixman \
     --disable-oss \
-    --static
+    --static \
+    --disable-tools \
+    --disable-docs \
+    --disable-libudev
 
 # Build
 make -j$(nproc)
