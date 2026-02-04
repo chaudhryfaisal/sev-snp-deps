@@ -12,11 +12,10 @@ fi
 ${SOURCE_DIR}/configure \
     --target-list=x86_64-softmmu \
     --python=python3 \
-    --enable-libusb \
-    --enable-usb-redir \
     --disable-gio \
     --disable-pixman \
-    --disable-oss
+    --disable-oss \
+    --static
 
 # Build
 make -j$(nproc)
